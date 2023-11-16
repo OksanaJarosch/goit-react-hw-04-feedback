@@ -46,4 +46,4 @@ export const App = () => {
     <GlobalStyle />
     </Container>
   );
-}
+};
