@@ -1,48 +1,49 @@
-import {Component} from "react";
+import { useState } from "react";
 import { GlobalStyle } from "GlobalStyle";
 import {Section} from "./Section/Section"
 import {Container} from "./App.styled"
 
 
-export class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0
-  }
+export const App = () => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0)
 
-  handleFeedback = (evt) => {
+  const handleFeedback = (evt) => {
     const targetValue = (evt.target.textContent).toLowerCase();
     
-    this.setState(prevState =>{
-      return{
-        [targetValue]: prevState[targetValue] + 1,
-      }
-    })
+    switch (targetValue) {
+      case "good": 
+      setGood(good => good+1)
+        break;
+
+        case "neutral": 
+        setNeutral(neutral => neutral + 1)
+        break;
+
+        case "bad":
+          setBad(bad => bad + 1)
+        break;
+    
+      default:
+        break;
+    }
   };
 
-  countTotalFeedback = () => {
-    const {good, neutral, bad} = this.state;
+  const countTotalFeedback = () => {
       return good + neutral + bad
   };
 
-  countPositiveFeedbackPercentage = () => {
-    const {good} = this.state;
-    const total = this.countTotalFeedback();
+    const countPositiveFeedbackPercentage = () => {
+    const total = countTotalFeedback();
     return Math.round((good / total) * 100);
   };
 
-
-  render(){
-    const total = this.countTotalFeedback();
-    const positivePercentage = this.countPositiveFeedbackPercentage();
-
-    return (
-      <Container>
-      <Section title="Please leave feedback" onLeaveFeedback={this.handleFeedback}></Section>
-      <Section title="Statistics" stats={this.state} total={total} positivePercentage={positivePercentage}></Section>
-      <GlobalStyle />
-      </Container>
-    );
-  };
+  return(
+    <Container>
+    <Section title="Please leave feedback" onLeaveFeedback={handleFeedback}></Section>
+    <Section title="Statistics" good={good} neutral={neutral} bad={bad} total={countTotalFeedback()} positivePercentage={countPositiveFeedbackPercentage()}></Section>
+    <GlobalStyle />
+    </Container>
+  );
 }
